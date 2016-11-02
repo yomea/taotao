@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 请不要 classpath:resource\*.properties写成正斜杆-->
+	<context:property-placeholder location="classpath:resource/*.properties" />
+	<!-- <context:property-placeholder location="classpath:resource/jdbc.properties" /> -->
+
+	<!-- 数据源配置, 使用 BoneCP 数据库连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<!-- 数据源驱动类可不写，Druid默认会自动根据URL识别DriverClass -->
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="5" />
+
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="10000" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 <property name="timeBetweenEvictionRunsMillis" 
+			value="10000" /> 配置一个连接在池中最小生存的时间，单位是毫秒 <property name="minEvictableIdleTimeMillis" 
+			value="300000" /> <property name="validationQuery" value="SELECT 'x'" /> 
+			<property name="testWhileIdle" value="true" /> <property name="testOnBorrow" 
+			value="false" /> <property name="testOnReturn" value="false" /> 打开PSCache，并且指定每个连接上PSCache的大小（Oracle使用） 
+			<property name="poolPreparedStatements" value="true" /> <property name="maxPoolPreparedStatementPerConnectionSize" 
+			value="20" /> 配置监控统计拦截的filters <property name="filters" value="stat" /> -->
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:mybatis\mybatis-config.xml"></property>
+		<!-- 定义别名,如果使用了mybatis的逆向工程，无需这个 -->
+		<!-- <property name="typeAliasesPackage" value="com.taotao.pojo"></property> -->
+
+		<!-- <property name="mapperLocations" value="classpath:mapper/*.xml"></property> -->
+		<!-- 配置映射文件的位置，如果配置文件与mapper接口在同一个位置，可以不写 -->
+		<!-- <property name="mapperLocations"> <array> <value></value> <value></value> 
+			</array> </property> -->
+	</bean>
+
+	<!-- 将mybatis实现的接口注入到spring容器中 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+		<property name="basePackage" value="com.taotao.mapper"></property>
+	</bean>
+
+	<!-- <bean id="redisDao" class="youth.hong.dao.cache.RedisDao"> <constructor-arg 
+		index="0" value="localhost"></constructor-arg> <constructor-arg index="1" 
+		value="6379"></constructor-arg> </bean> -->
+
+</beans>

@@ -1,0 +1,61 @@
+package com.taotao.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.taotao.common.pojo.EUDatagridResult;
+import com.taotao.common.pojo.TaotaoResult;
+import com.taotao.mapper.TbContentMapper;
+import com.taotao.pojo.TbContent;
+import com.taotao.pojo.TbContentExample;
+import com.taotao.pojo.TbContentExample.Criteria;
+import com.taotao.service.ContentService;
+import com.taotao.utils.HttpClientUtil;
+import com.taotao.utils.JsonUtils;
+
+@Controller
+public class ContentServiceImpl implements ContentService {
+
+	@Autowired
+	private TbContentMapper contentMapper;
+	@Value("${REST_BASE_URL}")
+	private String REST_BASE_URL;
+	@Value("${REST_CONTENT_SYNC_URL}")
+	private String REST_CONTENT_SYNC_URL;
+	
+	@Override
+	public EUDatagridResult getContent(long categoryId, int pageNum, int pageSize) {
+		PageHelper.startPage(pageNum, pageSize);
+		TbContentExample example = new TbContentExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andCategoryIdEqualTo(categoryId);
+		List<TbContent> list = contentMapper.selectByExample(example);
+		PageInfo<TbContent> pageInfo = new PageInfo<TbContent>(list);
+		long total = pageInfo.getTotal();
+		EUDatagridResult result = new EUDatagridResult(total, list);
+		return result;
+	}
+
+	@Override
+	public TaotaoResult saveContent(TbContent content) {
+		content.setCreated(new Date());
+		content.setUpdated(new Date());
+		int rows = contentMapper.insert(content);
+		if(rows > 0) {
+			String result = HttpClientUtil.doGet(REST_BASE_URL + REST_CONTENT_SYNC_URL);
+			TaotaoResult tr = JsonUtils.jsonToPojo(result, TaotaoResult.class);
+			if(tr.getStatus() != 200) {
+			//undo send email
+			}
+			return TaotaoResult.ok();
+		}
+		return TaotaoResult.build(400,"失败!");
+	}
+
+}

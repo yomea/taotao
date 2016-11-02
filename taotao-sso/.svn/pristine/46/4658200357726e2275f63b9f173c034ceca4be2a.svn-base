@@ -1,0 +1,55 @@
+package com.taotao.sso.service.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
+
+import com.taotao.common.pojo.TaotaoResult;
+import com.taotao.mapper.TbUserMapper;
+import com.taotao.pojo.TbUser;
+import com.taotao.pojo.TbUserExample;
+import com.taotao.pojo.TbUserExample.Criteria;
+import com.taotao.sso.service.UserService;
+
+@Service
+public class UserServiceImpl implements UserService {
+	
+	@Autowired
+	private TbUserMapper userMapper;
+
+	@Override
+	public TaotaoResult checkData(String content, Integer type) {
+		//1、2、3分别为表示username,phone,email
+		TbUserExample example = new TbUserExample();
+		Criteria criteria = example.createCriteria();
+		if(1 == type) {
+			criteria.andUsernameEqualTo(content);
+		} else if(2 == type) {
+			criteria.andPhoneEqualTo(content);
+		} else {
+			criteria.andEmailEqualTo(content);
+		}
+		
+		List<TbUser> users = userMapper.selectByExample(example);
+		
+		if(users == null || users.size() == 0) {
+			return TaotaoResult.ok(true);
+		}
+		
+		
+		return TaotaoResult.ok(false);
+	}
+
+	@Override
+	public TaotaoResult createUser(TbUser user) {
+		user.setCreated(new Date());
+		user.setUpdated(new Date());
+		user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+		userMapper.insert(user);
+		return TaotaoResult.ok();
+	}
+
+}

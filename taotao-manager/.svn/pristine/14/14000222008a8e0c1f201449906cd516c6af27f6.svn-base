@@ -1,0 +1,26 @@
+package com.taotao.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.taotao.service.TbItemParamItemService;
+
+@Controller
+@RequestMapping("/item")
+public class ItemParamItemController {
+	
+	@Autowired private TbItemParamItemService itemParamItemService;
+
+	@RequestMapping("/showParam/{itemId}")
+	public String showParam(Model mode, @PathVariable Long itemId) {
+		
+		String htmlStr = itemParamItemService.selectItemParam(itemId);
+		mode.addAttribute("itemParams", htmlStr);
+		return "item";
+		
+	}
+	
+}

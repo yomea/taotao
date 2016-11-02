@@ -1,0 +1,9 @@
+0:0:0:0:0:0:0:1 - - [20/Sep/2016:20:03:57 +0800] "POST /order/create.html HTTP/1.1" 200 7368 http-bio-8082-exec-1 2455
+0:0:0:0:0:0:0:1 - - [20/Sep/2016:20:03:57 +0800] "GET /js/jquery-1.6.4.js HTTP/1.1" 304 - http-bio-8082-exec-4 11
+0:0:0:0:0:0:0:1 - - [20/Sep/2016:20:03:57 +0800] "GET /css/purchase.sop.css HTTP/1.1" 304 - http-bio-8082-exec-3 11
+0:0:0:0:0:0:0:1 - - [20/Sep/2016:20:03:57 +0800] "GET /css/purchase.base.2012.css HTTP/1.1" 304 - http-bio-8082-exec-2 12
+0:0:0:0:0:0:0:1 - - [20/Sep/2016:20:03:57 +0800] "GET /js/jquery.cookie.js HTTP/1.1" 304 - http-bio-8082-exec-6 6
+0:0:0:0:0:0:0:1 - - [20/Sep/2016:20:03:57 +0800] "GET /js/base-2011.js HTTP/1.1" 304 - http-bio-8082-exec-5 14
+0:0:0:0:0:0:0:1 - - [20/Sep/2016:20:03:57 +0800] "GET /js/taotao.js HTTP/1.1" 304 - http-bio-8082-exec-10 5
+0:0:0:0:0:0:0:1 - - [20/Sep/2016:20:03:57 +0800] "GET /images/taotao-logo.gif HTTP/1.1" 304 - http-bio-8082-exec-5 46
+0:0:0:0:0:0:0:1 - - [20/Sep/2016:20:03:57 +0800] "GET /css/base.css HTTP/1.1" 304 - http-bio-8082-exec-7 77
